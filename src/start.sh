@@ -18,6 +18,18 @@ fi
 echo "[LOG] Searching for ImageModel.safetensors in filesystem:"
 find / -name 'ImageModel.safetensors' 2>/dev/null || echo "[LOG] File not found anywhere in filesystem."
 
+# Setup LoRA directory and link from persistent storage
+echo "[LOG] Setting up LoRA directory"
+mkdir -p /stable-diffusion-webui/models/Lora
+if [ -d /runpod-volume/loras ]; then
+  echo "[LOG] Linking LoRA files from /runpod-volume/loras"
+  ln -sf /runpod-volume/loras/* /stable-diffusion-webui/models/Lora/ 2>/dev/null || true
+  echo "[LOG] Available LoRA files:"
+  ls -lh /stable-diffusion-webui/models/Lora/
+else
+  echo "[LOG] No LoRA directory found at /runpod-volume/loras"
+fi
+
 echo "Worker Initiated"
 
 echo "Starting WebUI API"
